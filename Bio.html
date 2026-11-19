@@ -1,0 +1,205 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Interaktive Genetik für Klasse 10: Mendelsche Regeln, Kreuzungsschemata und Selbsttest."><title>Genetik-Werkstatt</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5ef;color:#172d28;font:17px/1.55 system-ui,sans-serif}header{background:#123c32;color:#fff;padding:2.7rem max(5vw,calc((100vw - 1040px)/2));background-image:radial-gradient(ellipse at 90% 0%,#32735d,transparent 62%)}header p{margin:0;color:#d5eee0}h1{font:clamp(2.5rem,8vw,5rem)/1 Georgia,serif;margin:.4rem 0 .8rem;letter-spacing:-.045em}h2,h3{line-height:1.2}nav,main{max-width:1080px;margin:auto;padding:0 20px}nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}button,select,input,textarea{font:inherit}button,select{border:1px solid #759188;border-radius:10px;padding:.55rem .9rem;color:#123c32;background:white;cursor:pointer}button:hover{background:#e0eee6}button.active,button.primary{background:#17604d;color:white;border-color:#17604d}button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #b25726;outline-offset:2px}main{padding-bottom:3rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px}.card{background:white;border:1px solid #d5e0d8;border-radius:16px;padding:1.15rem;margin:0 0 14px}.grid .card{margin:0}.card h3{margin:.1rem 0 .6rem}.tag{font-size:.8rem;font-weight:700;color:#395d51;text-transform:uppercase;letter-spacing:.06em}.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}.row label{display:grid;gap:4px}input:not([type=radio]),textarea{max-width:100%;border:1px solid #759188;border-radius:8px;padding:.5rem;color:#172d28;background:#fbfdfb}textarea{display:block;width:100%;min-height:5rem;margin-top:.4rem}table{border-collapse:collapse;background:white;margin:.8rem 0}td,th{border:1px solid #c1d6ca;text-align:center;padding:.38rem}th{background:#e6f0e8}.matrix input{width:clamp(2.8rem,13vw,5rem);padding:.3rem;text-align:center}.feedback{padding:.65rem .85rem;border-radius:8px;background:#e7f0fa;margin:.7rem 0 0}.good{background:#d9f1de!important}.bad{background:#ffe3d7!important}.choice{display:block;padding:.25rem}details{margin-top:.65rem}summary{cursor:pointer;font-weight:650}progress{width:100%;accent-color:#17604d}small{color:#38534a}[hidden]{display:none!important}
+</style>
+<header><p>Biologie · Gymnasium · Klasse 10</p><h1>Genetik-Werkstatt</h1><p>Mendelsche Regeln verstehen, Kreuzungen berechnen und Wissen testen.</p></header>
+<nav aria-label="Lernbereiche"><button data-page="learn">Lernen</button><button data-page="lab">Kreuzungslabor</button><button data-page="practice">Üben</button><button data-page="test">Test</button></nav>
+<main id="app"></main>
+<script>
+const lessons=[
+['Grundbegriffe','Ein Allel ist eine Variante eines Gens. Der Genotyp beschreibt hier die Allelkombination eines Individuums, der Phänotyp die beobachtbare Merkmalsausprägung. AA und aa sind homozygot (reinerbig), Aa ist heterozygot (mischerbig). Körperzellen sind im Modell diploid, Gameten haploid und tragen je ein Allel pro betrachtetes Gen. Autosomal bedeutet auf einem Autosom, gonosomal auf einem Geschlechtschromosom.','P bezeichnet die Elterngeneration, F₁ ihre Nachkommen und F₂ die Nachkommen aus der Kreuzung der F₁ untereinander.'],
+['Mendels Versuch','Mendel verwendete reinerbige Erbsenlinien. Für die gezielte Kreuzung entfernte er die Staubblätter vor der Selbstbestäubung und übertrug Pollen des ausgewählten Partners auf die Narbe. Eine Umhüllung schützte vor unerwünschtem Fremdpollen. Er zählte die Merkmalsausprägungen der Nachkommen.','Mit vielen Nachkommen lassen sich beobachtete und erwartete Häufigkeiten besser vergleichen.'],
+['1. Regel · Uniformität','Bei AA × aa sind im autosomalen Modell alle Nachkommen Aa. Bei vollständiger Dominanz gilt im Kaninchenmodell AA und Aa = schwarz, aa = weiß. Beim intermediären Erbgang sind ebenfalls alle F₁ gleich, etwa rosa bei rot × weiß.','Jeder reinerbige Elternteil liefert für das betrachtete Gen nur eine Sorte Gameten.'],
+['2. Regel · Spaltung','Aa × Aa ergibt ¼ AA, ½ Aa und ¼ aa. Bei vollständiger Dominanz ist das Phänotypverhältnis 3:1. Bei intermediärer Vererbung (Wunderblume) ist RW rosa und die F₂ spaltet sich in 1 rot : 2 rosa : 1 weiß. Beim Mosaikgefieder im Hühnermodell sind beide Farben gleichzeitig sichtbar.','Die Verhältnisse sind Wahrscheinlichkeiten. Kleine Stichproben können deutlich abweichen.'],
+['3. Regel · Neukombination','Bei unabhängiger Verteilung bildet AaBb vier gleich wahrscheinliche Gametentypen AB, Ab, aB und ab. AaBb × AaBb ergibt bei vollständiger Dominanz an beiden Genorten 9 A_B_ : 3 A_bb : 3 aaB_ : 1 aabb. Ein Unterstrich steht für ein beliebiges zweites Allel.','Sind beide Erbgänge intermediär und unabhängig, entstehen neun Phänotypklassen. Ihre Wahrscheinlichkeiten ergeben sich aus den Produkten der beiden Einzelverteilungen 1:2:1.'],
+['Rückkreuzung und Testkreuzung','Bei einer Rückkreuzung wird ein Nachkomme mit einem Elternteil oder einem Individuum mit gleichem Genotyp gekreuzt. Zur Testkreuzung einer rundsamigen Erbse B_ wird bb gewählt. BB × bb liefert nur runde Nachkommen, Bb × bb im Mittel 1 rund : 1 kantig.','Ein kantiger Nachkomme belegt Bb im Modell. Vier runde Nachkommen hintereinander sind auch bei Bb möglich, mit Wahrscheinlichkeit (½)⁴ = 6,25 %.'],
+['AB0-Blutgruppen','Im vereinfachten Modell gibt es die Allele A, B und 0. A und B sind zueinander kodominant und jeweils dominant gegenüber 0. AA/A0 ergibt A, BB/B0 ergibt B, AB ergibt AB und 00 ergibt 0. Auf den roten Blutkörperchen trägt AB beide AB0-Antigene, 0 keines der beiden.','AB × B0 ergibt AB, BB, A0, B0 zu je 25 %. Die Phänotypen sind 25 % AB, 50 % B und 25 % A.']
+];
+const bank=[
+['Grundbegriffe','Welcher Genotyp ist heterozygot?',['BB','Bb','bb'],1,'Bb enthält zwei verschiedene Allele.'],
+['Grundbegriffe','Wie viele Allele des betrachteten autosomalen Gens trägt eine haploide Gamete?',['0','1','2'],1,'Eine Gamete trägt im Modell ein Allel pro Gen.'],
+['Versuchsplanung','Wozu entfernt Mendel die Staubblätter der Empfängerblüte?',['Um Selbstbestäubung zu verhindern','Um fremden Pollen aus der Luft abzuhalten','Um die Samenfarbe zu verändern'],0,'Die eigenen Staubblätter könnten die Narbe mit eigenem Pollen bestäuben.'],
+['Uniformität','AA × aa bei vollständiger Dominanz. Gib den Genotyp aller F₁-Nachkommen an.','Aa','Aa','Ein Elternteil gibt A, der andere a weiter.','gen'],
+['Spaltung','Wie groß ist bei Aa × Aa der erwartete Anteil an Aa? Gib die Zahl in Prozent an.','50 %','50','Zwei der vier Kombinationen ergeben Aa.'],
+['Spaltung','Gib bei Aa × Aa das Phänotypverhältnis dominant : rezessiv an.','3:1','3:1','AA und Aa zählen zur dominanten Klasse.'],
+['Intermediär','Rosa Wunderblumen (RW × RW) werden gekreuzt. Wie viele weiße Blüten erwartest du bei 160 Nachkommen?','40','40','WW entsteht mit Wahrscheinlichkeit ¼. 160 ÷ 4 = 40.'],
+['Intermediär','In einer F₂ werden 119 rote, 241 rosa und 121 weiße Wunderblumen gezählt. Welches Modell passt am besten?',['3:1 für zwei Phänotypklassen','1:2:1 für drei Phänotypklassen','1:1:1 für drei Phänotypklassen'],1,'Die mittlere Klasse ist ungefähr doppelt so groß wie jede der äußeren.'],
+['Intermediär','Hellgrün = dd, dunkelgrün = Dd, olivgrün = DD. Welche Farbe hat die F₁ aus hellgrün × olivgrün?',['Hellgrün','Dunkelgrün','Olivgrün'],1,'Alle Nachkommen sind Dd und zeigen die Zwischenform.'],
+['Kodominanz','Mosaikgefieder = SW, schwarz = SS, weiß = WW. Wie viel Prozent der Nachkommen aus SW × SW zeigen das Mosaik?','50 %','50','Nur SW ergibt das Mosaik. SW entsteht in zwei von vier Feldern.'],
+['Rückkreuzung','Rot = RR, orange = RG, gelb = GG. Welche Phänotypen erwartest du bei RR × RG?',['Nur orange','Je 50 % rot und orange','Je 50 % rot und gelb'],1,'RR gibt nur R weiter. RG gibt R oder G weiter.'],
+['Testkreuzung','Eine rundsamige Erbse wird mit bb gekreuzt. Unter den Nachkommen gibt es kantige Samen. Welchen Genotyp hat die rundsamige Pflanze?','Bb','Bb','Für bb muss auch die rundsamige Pflanze ein b geliefert haben.','gen'],
+['Testkreuzung','Wie groß ist bei Bb × bb die Wahrscheinlichkeit für genau vier runde Nachkommen in vier unabhängigen Fällen? Gib die Zahl in Prozent an.','6,25 %','6.25','(½)⁴ = 1/16 = 6,25 %.'],
+['Neukombination','Welche Gametentypen entstehen bei AaBb bei unabhängiger Verteilung?',['Aa und Bb','AB, Ab, aB und ab','AA, Aa, Bb und bb'],1,'Jede Gamete erhält ein Allel von jedem Gen.'],
+['Neukombination','Bei AaBb × AaBb sind die Gene unabhängig und A sowie B vollständig dominant. Wie viele von 160 Nachkommen zeigen beide rezessiven Merkmale im Erwartungswert?','10','10','P(aabb) = ¼ × ¼ = 1/16.'],
+['Neukombination','Zwei unabhängig vererbte Merkmale sind intermediär. Wie viele Phänotypklassen sind in der F₂ aus doppelt heterozygoten Eltern möglich?','9','9','Je drei Phänotypen lassen sich zu 3 × 3 Klassen kombinieren.'],
+['AB0','Bei AB × B0: Wie groß ist die Wahrscheinlichkeit für Blutgruppe B? Gib die Zahl in Prozent an.','50 %','50','BB und B0 zählen beide zur Blutgruppe B.'],
+['AB0','Bei A0 × B0: Wie groß ist die Wahrscheinlichkeit für Blutgruppe 0? Gib die Zahl in Prozent an.','25 %','25','Beide Eltern müssen jeweils 0 weitergeben.'],
+['AB0','Welche Blutgruppen sind bei AB × BB im Modell möglich?',['A und B','AB und B','AB und 0'],1,'A + B ergibt AB, B + B ergibt BB.']
+];
+const writing=[
+['Versuchsplanung','Beurteile, welche Folge es hätte, wenn Mendel die Blüten nach der gezielten Bestäubung ungeschützt ließe.','Unbeabsichtigter Fremdpollen könnte auf die Narbe gelangen. Dann wäre die Herkunft der väterlichen Allele einzelner Nachkommen nicht mehr gesichert.'],
+['Testkreuzung','Plane eine Testkreuzung für eine rundsamige Erbse. Begründe, warum fünf runde Nachkommen allein Reinerbigkeit noch nicht beweisen.','Kreuzung mit einer kantigsamigen Erbse (bb). BB ergibt nur runde Nachkommen, Bb im Mittel je zur Hälfte rund und kantig. Unter Bb sind fünf runde Nachkommen hintereinander mit (½)⁵ = 1/32 möglich.'],
+['Erbgänge vergleichen','Vergleiche dominante, intermediäre und kodominante Vererbung anhand des heterozygoten Phänotyps.','Bei vollständiger Dominanz entspricht der heterozygote Phänotyp der dominant homozygoten Form. Beim intermediären Erbgang liegt die Ausprägung zwischen den Elternformen. Bei Kodominanz sind beide Allelausprägungen erkennbar, etwa beide Antigene bei AB.']
+];
+const models=[
+{label:'Kaninchen · dominant-rezessiv',g:['AA','Aa','aa'],p:g=>g==='aa'?'weiß':'schwarz',pair:[1,1]},
+{label:'Wunderblume · intermediär',g:['RR','RW','WW'],p:g=>({RR:'rot',RW:'rosa',WW:'weiß'})[g],pair:[1,1]},
+{label:'AB0 · Blutgruppen',g:['AA','A0','AB','BB','B0','00'],p:g=>({AA:'A',A0:'A',AB:'AB',BB:'B',B0:'B','00':'0'})[g],pair:[2,4]},
+{label:'Erbsen · zwei unabhängige Gene',g:['AABB','AaBb','aabb','Aabb','aaBb','AABb','AaBB','AAbb','aaBB'],p:g=>(g.includes('A')?'rund':'kantig')+' / '+(g.includes('B')?'gelb':'grün'),pair:[1,1],two:true}
+];
+const app=document.querySelector('#app');
+const sortAlleles=s=>[...s].sort().join('');
+function canonical(g,two=false){
+ if(!two)return sortAlleles(g);
+ return [...g].sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase())||a.charCodeAt(0)-b.charCodeAt(0)).join('');
+}
+function gametes(g,two){return two?[g[0]+g[2],g[0]+g[3],g[1]+g[2],g[1]+g[3]]:[...g]}
+function tableFor(m,a,b){
+ const x=gametes(a,m.two),y=gametes(b,m.two);
+ return {x,y,keys:y.flatMap(j=>x.map(i=>canonical(i+j,m.two)))};
+}
+function ratio(keys,transform){
+ const counts=new Map();
+ keys.forEach(key=>{const value=transform(key);counts.set(value,(counts.get(value)||0)+1)});
+ return [...counts].map(([key,n])=>key+' '+(100*n/keys.length).toLocaleString('de-DE')+' %').join(' · ');
+}
+const selection=(values,selected)=>values.map((value,i)=>'<option value="'+i+'" '+(i===selected?'selected':'')+'>'+value+'</option>').join('');
+const interpretationCases=[
+ ['Testkreuzung beurteilen','Ein schwarzes Kaninchen (AA oder Aa) wird mit einem weißen (aa) gekreuzt. Alle sechs Nachkommen sind schwarz. Welche Genotypen kommen weiterhin infrage? Was würde ein weißes Jungtier beweisen?','AA und Aa sind weiterhin möglich. Bei Aa × aa ist die Wahrscheinlichkeit für sechs schwarze Jungtiere (½)⁶ = 1/64. Ein weißes Jungtier (aa) beweist im Modell, dass das schwarze Elterntier ein a abgegeben hat und somit Aa ist.'],
+ ['Versuchsdaten auswerten','Aus RW × RW entstehen 34 rote, 73 rosa und 37 weiße Wunderblumen. Berechne die erwarteten Anzahlen für 144 Pflanzen und beurteile, ob die Beobachtung zum Modell passt.','Erwartet werden 36 rote, 72 rosa und 36 weiße Blüten (1:2:1). Die Abweichungen betragen −2, +1 und +1. Die Daten passen näherungsweise zum Modell. Die tatsächlichen Anzahlen schwanken durch die zufällige Kombination der Gameten.'],
+ ['Genotyp und Blutgruppe unterscheiden','Bei AB × B0 entstehen vier gleich wahrscheinliche Genotypen. Erkläre, warum es trotzdem nur drei Blutgruppen gibt und weshalb Blutgruppe 0 ausgeschlossen ist.','AB ergibt AB, BB und B0 ergeben beide B, A0 ergibt A. Damit sind A und AB je zu 25 % und B zu 50 % zu erwarten. Für 00 müssten beide Eltern 0 vererben. Der AB-Elternteil kann nur A oder B weitergeben.'],
+ ['Zwei Merkmale auswerten','Bei AaBb × AaBb sind die Gene unabhängig. A steht für rund, B für gelb. Erkläre, warum 3/16 der Nachkommen kantig und gelb sind. Was würdest du bei 160 Nachkommen erwarten?','Kantig erfordert aa (¼). Für gelb genügt ein B (¾). Bei unabhängiger Verteilung multipliziert man ¼ × ¾ = 3/16. Von 160 Nachkommen erwartet man 30 kantige, gelbe Erbsen.']
+];
+const displayGenotype=k=>k==='0A'?'A0':k==='0B'?'B0':k;
+function interpretationQuestions(m,keys){
+ const phenotypes=keys.map(k=>m.p(displayGenotype(k)));
+ const target=[...new Set(phenotypes)].at(-1);
+ const genotype=keys[0], matching=phenotypes.filter(p=>p===target).length;
+ const percent=100*matching/keys.length, total=keys.length*10;
+ return [
+  ['Wie viel Prozent der Nachkommen zeigen den Phänotyp „'+target+'“?',percent,matching+' von '+keys.length+' Feldern zeigen diesen Phänotyp.'],
+  ['Wie viele Nachkommen mit „'+target+'“ erwartest du bei insgesamt '+total+' Nachkommen?',matching*10,total+' × '+matching+'/'+keys.length+' = '+matching*10+'.'],
+  ['Wie viel Prozent der Nachkommen besitzen den Genotyp '+displayGenotype(genotype)+'?',100*keys.filter(k=>k===genotype).length/keys.length,'Zähle nur Felder mit genau diesem Genotyp. Verschiedene Genotypen können denselben Phänotyp haben.']
+ ];
+}
+function renderInterpretation(container,m,keys){
+ const questions=interpretationQuestions(m,keys);
+ const [title,prompt,answer]=interpretationCases[models.indexOf(m)];
+ container.innerHTML='<h3>2. Ergebnisse auswerten</h3><p>Leite die Antworten aus deinem Kreuzungsquadrat ab. Gib Prozentwerte als Zahl ein, zum Beispiel 12,5.</p><form>'+questions.map(([prompt],i)=>'<p><label for="interpret-'+i+'">'+(i+1)+'. '+prompt+'</label><br><input id="interpret-'+i+'" name="interpret-'+i+'" inputmode="decimal"><span class="interpret-feedback" aria-live="polite"></span></p>').join('')+'<button class="primary">Auswertung prüfen</button></form><details><summary>Musterlösung zur Auswertung</summary><ol>'+questions.map(([prompt,value,explanation],i)=>'<li>'+value.toLocaleString('de-DE')+(i===1?'':' %')+' · '+explanation+'</li>').join('')+'</ol></details><h3>3. Schlussfolgerung begründen</h3><label for="lab-reason"><strong>'+title+'</strong><br>'+prompt+'</label><textarea id="lab-reason"></textarea><details><summary>Begründung mit der Musterantwort vergleichen</summary><p>'+answer+'</p></details>';
+ container.querySelector('form').onsubmit=e=>{
+  e.preventDefault();
+  questions.forEach(([,value,explanation],i)=>{
+   const field=e.currentTarget.elements['interpret-'+i],feedback=field.nextElementSibling;
+   const ok=correct(['','','',String(value)],field.value);
+   feedback.textContent=' · '+(ok?'Richtig. '+explanation:field.value.trim()?'Prüfe, welche Felder du zählen musst.':'Gib zuerst eine Antwort ein.');
+   field.className=ok?'good':'bad';
+   field.setAttribute('aria-invalid',String(!ok));
+  });
+ };
+}
+function lab(){
+ app.innerHTML='<h2>Kreuzungslabor</h2><div class="card"><div class="row"><label>Modell<select id="model">'+selection(models.map(m=>m.label),0)+'</select></label><label>Elternteil 1<select id="pa"></select></label><label>Elternteil 2<select id="pb"></select></label></div><h3>1. Kreuzungsquadrat ausfüllen</h3><p>Trage die Genotypen in das Kreuzungsquadrat ein. Oben und links stehen die Gameten.</p><div id="matrix"></div></div><section class="card" id="interpretation"></section>';
+ const model=document.querySelector('#model'),pa=document.querySelector('#pa'),pb=document.querySelector('#pb');
+ function setup(){const m=models[+model.value];pa.innerHTML=selection(m.g,m.pair[0]);pb.innerHTML=selection(m.g,m.pair[1]);draw()}
+ function draw(){
+ const m=models[+model.value],{x,y,keys}=tableFor(m,m.g[+pa.value],m.g[+pb.value]);
+ const matrix=document.querySelector('#matrix');
+ matrix.innerHTML='<table class="matrix"><thead><tr><th>×</th>'+x.map(v=>'<th scope="col">'+v+'</th>').join('')+'</tr></thead><tbody>'+y.map((v,i)=>'<tr><th scope="row">'+v+'</th>'+x.map((u,j)=>'<td><input aria-label="Zeile '+(i+1)+', Spalte '+(j+1)+'" maxlength="8" spellcheck="false"></td>').join('')+'</tr>').join('')+'</tbody></table><div class="row"><button class="primary" id="check">Felder prüfen</button><button id="solve">Lösung aufdecken</button></div><p id="labresult" aria-live="polite"></p>';
+ const fields=[...matrix.querySelectorAll('input')],result=matrix.querySelector('#labresult');
+ const visible=displayGenotype;
+ renderInterpretation(app.querySelector('#interpretation'),m,keys);
+ const stats=()=>'<strong>Genotypen:</strong> '+ratio(keys,visible)+'<br><strong>Phänotypen:</strong> '+ratio(keys,k=>m.p(visible(k)));
+ matrix.querySelector('#check').onclick=()=>{
+ let right=0;
+ fields.forEach((f,i)=>{const ok=canonical(f.value.replace(/\s/g,''),m.two)===keys[i];right+=Number(ok);f.className=ok?'good':'bad';f.setAttribute('aria-invalid',String(!ok))});
+ result.innerHTML=right+' von '+keys.length+' Feldern richtig.'+(right===keys.length?' Werte jetzt deine Ergebnisse aus.':'');
+ };
+ matrix.querySelector('#solve').onclick=()=>{fields.forEach((f,i)=>{f.value=visible(keys[i]);f.className='';f.removeAttribute('aria-invalid')});result.innerHTML=stats()};
+ }
+ model.onchange=setup;pa.onchange=pb.onchange=draw;setup();
+}
+const isChoice=q=>Array.isArray(q[2]);
+function fields(q,name){
+ return isChoice(q)?q[2].map((v,i)=>'<label class="choice"><input type="radio" name="'+name+'" value="'+i+'"> '+v+'</label>').join(''):'<input aria-label="Deine Antwort" name="'+name+'" autocomplete="off" spellcheck="false">';
+}
+function correct(q,v){
+ if(isChoice(q))return v===String(q[3]);
+ const clean=v.trim().replace(/\s/g,'');
+ if(q[5]==='gen')return canonical(clean)===canonical(q[3]);
+ if(q[3].includes(':'))return clean===q[3];
+ const n=clean.replace(/%$/,'').replace(',','.');
+ return /^\d+(\.\d+)?$/.test(n)&&Number(n)===Number(q[3]);
+}
+function solution(q){return isChoice(q)?q[2][q[3]]:q[2]}
+function shuffled(items){
+ const copy=[...items];
+ for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}
+ return copy;
+}
+function learn(){
+ app.innerHTML='<h2>Lernkapitel</h2><div class="grid">'+lessons.map(([title,body,example])=>'<article class="card"><h3>'+title+'</h3><p>'+body+'</p><details><summary>Merksatz oder Beispiel</summary><p>'+example+'</p></details></article>').join('')+'</div>';
+}
+function practice(){
+ app.innerHTML='<h2>Üben</h2><p>Wähle ein Thema. Du kannst nach jeder Eingabe prüfen und erneut versuchen.</p><div class="card"><label>Thema <select id="topic"></select></label><div id="exercise"></div></div>';
+ const topic=app.querySelector('#topic'),box=app.querySelector('#exercise');
+ const topics=['Alle Themen',...new Set([...bank,...writing].map(q=>q[0]))];
+ topic.innerHTML=selection(topics,0);
+ let pool=[],i=0;
+ function start(){pool=shuffled([...bank,...writing].filter(q=>!+topic.value||q[0]===topics[+topic.value]));i=0;draw()}
+ function draw(){
+ const q=pool[i],open=q.length===3;
+ box.innerHTML='<p class="tag">'+q[0]+' · '+(i+1)+' / '+pool.length+'</p><form><h3>'+q[1]+'</h3>'+(open?'<textarea aria-label="Deine Begründung"></textarea><details><summary>Musterantwort vergleichen</summary><p>'+q[2]+'</p></details>':fields(q,'answer')+'<p><button class="primary">Prüfen</button></p><div id="response" aria-live="polite"></div><details><summary>Lösung und Erklärung</summary><p><strong>'+solution(q)+'</strong> · '+q[4]+'</p></details>')+'</form><p><button id="next">'+(i===pool.length-1?'Neue Runde':'Nächste Aufgabe')+'</button></p>';
+ box.querySelector('form').onsubmit=e=>{
+ e.preventDefault();
+ if(open)return;
+ const value=new FormData(e.currentTarget).get('answer')??'';
+ const ok=correct(q,value);
+ const r=box.querySelector('#response');
+ r.className='feedback '+(ok?'good':'bad');
+ r.textContent=ok?'Richtig! '+q[4]:value.trim()?'Überprüfe deinen Ansatz und versuche es erneut.':'Gib zuerst eine Antwort ein.';
+ };
+ box.querySelector('#next').onclick=()=>{if(++i===pool.length)start();else draw()};
+ }
+ topic.onchange=start;start();
+}
+let testSession=null;
+function test(){
+ if(!testSession){
+ app.innerHTML='<h2>Selbsttest</h2><div class="card"><h3>Genetik anwenden</h3><p>12 Aufgaben mit automatischer Auswertung und eine Begründungsaufgabe zum Vergleich mit der Musterlösung. Plane etwa 20 Minuten ein. Die Lösungen erscheinen nach der Abgabe.</p><button class="primary" id="start">Test starten</button></div>';
+ app.querySelector('#start').onclick=()=>{
+ const groups=[[0,1],[2],[3],[4,5],[6,7,8],[9],[10,11],[12],[13],[14,15],[16,17,18]];
+ const questions=groups.map(group=>bank[shuffled(group)[0]]);
+ questions.push(bank[shuffled([10,11].filter(index=>!questions.includes(bank[index])))[0]]);
+ testSession={questions,open:shuffled(interpretationCases)[0],answers:Array(12).fill(''),reason:'',done:false};test();
+ };return;
+ }
+ const state=testSession;
+ if(state.done){
+ const score=state.questions.filter((q,i)=>correct(q,state.answers[i])).length;
+ app.innerHTML='<h2>Testergebnis</h2><div class="card"><h3>'+score+' / 12 Punkte · '+Math.round(100*score/12)+' %</h3><progress max="12" value="'+score+'" aria-label="Erreichte Punkte"></progress><p>Die Begründung wertest du mit der Musterantwort selbst aus.</p><button id="retry" class="primary">Neuen Test starten</button></div>'+state.questions.map((q,i)=>'<article class="card"><small>'+q[0]+'</small><h3>'+(i+1)+'. '+q[1]+'</h3><p class="feedback '+(correct(q,state.answers[i])?'good':'bad')+'"><strong>'+(correct(q,state.answers[i])?'Richtig':'Kein Punkt')+'</strong> · Deine Antwort: <span data-answer="'+i+'"></span></p><p><strong>Lösung: '+solution(q)+'</strong> · '+q[4]+'</p></article>').join('')+'<article class="card"><h3>13. '+state.open[1]+'</h3><p id="reason"></p><p><strong>Musterantwort:</strong> '+state.open[2]+'</p></article>';
+ app.querySelectorAll('[data-answer]').forEach(el=>{const i=+el.dataset.answer,q=state.questions[i],v=state.answers[i];el.textContent=v.trim()?(isChoice(q)?q[2][+v]:v):'offen'});
+ app.querySelector('#reason').textContent='Deine Begründung: '+(state.reason.trim()||'offen');
+ app.querySelector('#retry').onclick=()=>{testSession=null;test();window.scrollTo(0,0)};
+ return;
+ }
+ app.innerHTML='<h2>Selbsttest</h2><p>Ein Punkt je richtiger Antwort. Die Begründung vergleichst du nach der Abgabe selbst.</p><form>'+state.questions.map((q,i)=>'<section class="card"><small>'+q[0]+' · 1 Punkt</small><h3>'+(i+1)+'. '+q[1]+'</h3>'+fields(q,'q'+i)+'</section>').join('')+'<section class="card"><label><strong>13. '+state.open[1]+'</strong><textarea name="reason"></textarea></label></section><p id="submitStatus" aria-live="polite"></p><button class="primary">Test abgeben</button></form>';
+ const form=app.querySelector('form');
+ state.questions.forEach((q,i)=>{const field=form.elements['q'+i];if(isChoice(q)){field.value=state.answers[i]}else field.value=state.answers[i]});
+ form.elements.reason.value=state.reason;
+ function save(){const formData=new FormData(form);state.questions.forEach((_,i)=>{state.answers[i]=formData.get('q'+i)??''});state.reason=formData.get('reason')}
+ form.oninput=()=>{save();app.querySelector('#submitStatus').textContent=''};
+ let warned=false;
+ form.onsubmit=e=>{
+ e.preventDefault();save();
+ const blank=state.answers.filter(v=>!v.trim()).length+Number(!state.reason.trim());
+ if(blank&&!warned){warned=true;app.querySelector('#submitStatus').textContent=blank+' Antworten sind offen. Klicke erneut auf „Test abgeben“, um trotzdem auszuwerten.';return}
+ state.done=true;test();window.scrollTo(0,0);
+ };
+}
+const pages={learn,lab,practice,test};
+document.querySelectorAll('nav button').forEach(button=>button.onclick=()=>{
+ document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b===button);if(b===button)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ pages[button.dataset.page]();
+});
+document.querySelector('nav button').click();
+</script></html>
